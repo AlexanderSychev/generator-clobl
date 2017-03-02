@@ -1,55 +1,68 @@
-goog.provide('<%= controlBlockProvide %>');
+goog.provide('<%= BlockNamespace %>.<%= BlockName %>');
 
 goog.require('cl.iControl.Control');
-goog.require('goog.ui.Component');
-
-
-
-/**
- * Pablo <%= blockDescriptionName %> block
-
- * @param {cl.iControl.View} view
- * @param {goog.dom.DomHelper=} opt_domHelper
- * @constructor
- * @extends {cl.iControl.Control}
- */
-<%= controlBlockProvide %> = function(view, opt_domHelper) {
-  goog.base(this, view, opt_domHelper);
-
-  this.setSupportedState(goog.ui.Component.State.ALL, false);
-  this.setAllowTextSelection(false);
-
-};
-goog.inherits(<%= controlBlockProvide %>, cl.iControl.Control);
+goog.require('goog.events');
+goog.require('<%= BlockNamespace %>.<%= TemplateName %>');
+goog.require('<%= BlockNamespace %>.<%= ViewName %>');
+goog.require('<%= FactoryFullName %>');
 
 goog.scope(function() {
+    const CloblControl = cl.iControl.Control;
+    const getUniqueId = goog.events.getUniqueId;
+    const Template = <%= BlockNamespace %>.<%= TemplateName %>;
+    const View = <%= BlockNamespace %>.<%= ViewName %>;
+    const Factory = <%= FactoryFullName %>;
 
-  var Control = <%= controlBlockProvide %>;
+    /** @enum {string} */
+    const Event = {
+        CLICK: getUniqueId('click')
+    };
 
+    /**
+     * Control
+     */
+    class <%= BlockName %> extends CloblControl {
+        /**
+         * @param {cl.iControl.View} view
+         * @param {goog.dom.DomHelper=} opt_domHelper
+         */
+        constructor(view, opt_domHelper) {
+            super(view, opt_domHelper);
+        }
 
-  /**
-   * List of <%= blockDescriptionName %> events
-   * @enum {string}
-   * @const
-   */
-  Control.Event = {
-  };
+        /** @override */
+        decorateInternal(element) {
+            super.decorateInternal(element);
+        }
 
+        /** @override */
+        enterDocument() {
+            super.enterDocument();
+            this.autoDispatch(View.Event.CLICK, Event.CLICK);
+        }
 
-  /**
-   * @override
-   * @param {Element} element
-   */
-  Control.prototype.decorateInternal = function(element) {
-    goog.base(this, 'decorateInternal', element);
-  };
+        /**
+         * @const
+         * @type {string}
+         * @return {string}
+         */
+        static get NAME() {
+            return Template.NAME();
+        }
+    };
 
+    // Register control in factory
+    Factory.getInstance().register('<%= BlockName %>', {
+        control: <%= BlockName %>,
+        view: View
+    });
 
-  /**
-   * @override
-   */
-  Control.prototype.enterDocument = function() {
-    goog.base(this, 'enterDocument');
-  };
+    /** @constructor */
+    <%= BlockNamespace %>.<%= BlockName %> = <%= BlockName %>;
 
+    /**
+     * @const
+     * @enum {string}
+     */
+    <%= BlockNamespace %>.<%= BlockName %>.Event = Event;
 });  // goog.scope

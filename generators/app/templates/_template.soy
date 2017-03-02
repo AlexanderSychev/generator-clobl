@@ -1,16 +1,14 @@
-{namespace <%= soyBlockProvide %>}
+{namespace <%= BlockNamespace %>.<%= TemplateName %>}
 
 /**
- * Template for Pablo <%= blockDescriptionName %> block
+ * Template
  *
- * @param? params {{
- *     ?data: {
- *     }
- * }}
+ * @param? params {<%= BlockNamespace %>.Params}
  * @constructor
  * @extends cl.iControl.Template
+ * @factory <%= FactoryFullName %>
  */
-{template .<%= soyConstructorTemplateName %>}
+{template .<%= TemplateEntryName %>}
     {call .init data="all" /}
 {/template}
 
@@ -18,7 +16,26 @@
  * @override
  */
 {template .rootClass}
-    <%= name %>
+    <%= RootCssClass %>
+{/template}
+
+/**
+ * @override
+ */
+{template .NAME}
+    <%= BlockName %>
+{/template}
+
+/**
+ * @override
+ * @param? params {<%= BlockNamespace %>.Params}
+ */
+{template .attributes kind="attributes"}
+    data-params="{call goog.json.serialize data="$params" /}"
+    {if $ij?.fromServer}
+        {sp}
+        data-remap
+    {/if}
 {/template}
 
 /**
@@ -27,4 +44,3 @@
 {template .body}
 
 {/template}
-

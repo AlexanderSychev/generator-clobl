@@ -1,52 +1,74 @@
-goog.provide('<%= viewBlockProvide %>');
+goog.provide('<%= BlockNamespace %>.<%= ViewName %>');
 
 goog.require('cl.iControl.View');
+goog.require('goog.dom.classlist');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('<%= BlockNamespace %>.Params');
 
+goog.scope(function () {
+    const CloblView = cl.iControl.View;
+    const getUniqueId = goog.events.getUniqueId;
+    const EventType = goog.events.EventType;
+    const classlist = goog.dom.classlist;
 
+    /** @enum {string} */
+    const CssClass = {
+        ROOT: '<%= RootCssClass %>'
+    };
 
-/**
- * View for <%= blockDescriptionName %> block
- *
- * @param {Object=} opt_params
- * @param {string=} opt_type
- * @param {String=} opt_modifier
- * @constructor
- * @extends {cl.iControl.View}
- */
-<%= viewBlockProvide %> = function(opt_params, opt_type, opt_modifier) {
-  goog.base(this, opt_params, opt_type, opt_modifier);
-};
-goog.inherits(<%= viewBlockProvide %>, cl.iControl.View);
+    /** @enum {string} */
+    const Event = {
+        CLICK: getUniqueId('click')
+    };
 
-goog.scope(function() {
+    /**
+     * View
+     */
+    class <%= ViewName %> extends CloblView {
+        /**
+         * @param {<%= BlockNamespace %>.Params=} opt_params
+         * @param {string=} opt_type
+         * @param {String=} opt_modifier
+         */
+        constructor(opt_params, opt_type, opt_modifier) {
+            super(opt_params, opt_type, opt_modifier);
+        }
 
-  var View = <%= viewBlockProvide %>;
+        /** @override */
+        decorateInternal(element) {
+            super.decorateInternal(element);
+        }
 
+        /** @override */
+        enterDocument() {
+            super.enterDocument();
 
-  /**
-   * List of CSS classes
-   * @enum {string}
-   * @const
-   */
-  View.CssClass = {
-    ROOT: '<%= name %>'
-  };
+            this.getHandler().listen(
+                this.getElement(),
+                EventType.CLICK,
+                this.emitClick_
+            );
+        }
 
+        /** @private */
+        emitClick_() {
+            this.dispatchEvent(Event.CLICK);
+        }
+    };
 
-  /**
-   * @override
-   * @param {Element} element
-   */
-  View.prototype.decorateInternal = function(element) {
-    goog.base(this, 'decorateInternal', element);
-  };
+    /** @constructor */
+    <%= BlockNamespace %>.<%= ViewName %> = <%= ViewName %>
 
+    /**
+     * @const
+     * @enum {string}
+     */
+    <%= BlockNamespace %>.<%= ViewName %>.CssClass = CssClass;
 
-  /**
-   * @override
-   */
-  View.prototype.enterDocument = function() {
-    goog.base(this, 'enterDocument');
-  };
-
+    /**
+     * @const
+     * @enum {string}
+     */
+    <%= BlockNamespace %>.<%= ViewName %>.Event = Event;
 });  // goog.scope

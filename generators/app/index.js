@@ -12,37 +12,50 @@ module.exports = yeoman.Base.extend({
       'Генерирующий генератор для блоков ' + chalk.red('Clobl') + '!'
     ));
 
-    var prompts = [{
-      type: 'input',
-      name: 'controlBlockProvide',
-      message: 'Что писать в Provide у контрола? (напр. pb.bPbHeader.PbHeader)',
-      //Defaults to the project's folder name if the input is skipped
-      default: this.appname
-    }, {
-      type: 'input',
-      name: 'blockDescriptionName',
-      message: 'Как назвать блок в комментах? (напр. Header)',
-      //Defaults to the project's folder name if the input is skipped
-      default: this.appname
-    }, {
-      type: 'input',
-      name: 'viewBlockProvide',
-      message: 'Что писать в Provide у View? (напр. pb.bPbHeader.View)',
-      //Defaults to the project's folder name if the input is skipped
-      default: this.appname
-    }, {
-      type: 'input',
-      name: 'soyBlockProvide',
-      message: 'Что писать в Provide у Soy? (напр. pb.bPbHeader.Template)',
-      //Defaults to the project's folder name if the input is skipped
-      default: this.appname
-    }, {
-      type: 'input',
-      name: 'soyConstructorTemplateName',
-      message: 'Как назвать конструктор Soy? (напр. header)',
-      //Defaults to the project's folder name if the input is skipped
-      default: this.appname
-    }];
+    var prompts = [
+        {
+            type: 'input',
+            name: 'BlockNamespace',
+            message: 'ПространствоИмен',
+            default: 'cl.gBlock'
+        },
+        {
+            type: 'input',
+            name: 'BlockName',
+            message: 'Имя блока',
+            default: 'Block'
+        },
+        {
+            type: 'input',
+            name: 'ViewName',
+            message: 'Имя представления',
+            default: 'View'
+        },
+        {
+            type: 'input',
+            name: 'TemplateName',
+            message: 'Имя шаблона',
+            default: 'Template'
+        },
+        {
+            type: 'input',
+            name: 'TemplateEntryName',
+            message: 'Точка входа в шаблон',
+            default: 'block'
+        },
+        {
+            type: 'input',
+            name: 'RootCssClass',
+            message: 'Главный CSS-класс',
+            default: 'b-block'
+        },
+        {
+            type: 'input',
+            name: 'FactoryFullName',
+            message: 'Полное имя фабрики',
+            default: 'cl.iCloblFactory.CloblFactory'
+        }
+    ];
 
     return this.prompt(prompts).then(function (props) {
       // To access props later use this.props.someAnswer;
@@ -54,33 +67,23 @@ module.exports = yeoman.Base.extend({
   writing: function () {
     this.fs.copyTpl(
       this.templatePath('_control.js'),
-      this.destinationPath(this.blockname + '.js'), {
-        controlBlockProvide: this.props.controlBlockProvide,
-        blockDescriptionName: this.props.blockDescriptionName
-      }
+      this.destinationPath(this.props.RootCssClass + '.js'), this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath('Params.js'),
+      this.destinationPath('Params.js'), this.props
     );
     this.fs.copyTpl(
       this.templatePath('_view.js'),
-      this.destinationPath('view.js'), {
-        viewBlockProvide: this.props.viewBlockProvide,
-        blockDescriptionName: this.props.blockDescriptionName,
-        name: this.blockname
-      }
+      this.destinationPath('View.js'), this.props
     );
     this.fs.copyTpl(
       this.templatePath('_template.soy'),
-      this.destinationPath(this.blockname + '.soy'), {
-        soyBlockProvide: this.props.soyBlockProvide,
-        blockDescriptionName: this.props.blockDescriptionName,
-        soyConstructorTemplateName: this.props.soyConstructorTemplateName,
-        name: this.blockname
-      }
+      this.destinationPath(this.props.RootCssClass + '.soy'), this.props
     );
     this.fs.copyTpl(
       this.templatePath('_styles.scss'),
-      this.destinationPath(this.blockname + '.scss'), {
-        name: this.blockname
-      }
+      this.destinationPath(this.props.RootCssClass + '.scss'), this.props
     );
   }
 });
